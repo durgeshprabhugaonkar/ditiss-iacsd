@@ -1,5 +1,3 @@
-# ditiss-iacsd
-
 Overview
 
 This project demonstrates a basic reverse shell implementation in Python using socket programming and threading.
